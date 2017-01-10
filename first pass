@@ -1,0 +1,32 @@
+in_put = "date,process,host,log,bytes;20140206,cme_trader_2,cme0001,0345-cme_trader_2.log.gz,15400000;20140206,phlx_trader_1,phlx0001,0651-phlx_trader_1.log.gz,14100000;20140206,phlx_trader_2,phlx0001,0645-phlx_trader_2.log.gz,13800000;20140207,cme_trader_2,cme0001,0345-cme_trader_2.log.gz,15800000;20140207,cme_trader_3,cme0001,0345-cme_trader_3.log.gz,14200000;20140207,phlx_trader_1,phlx0001,0651-phlx_trader_1.log.gz,24100000"
+
+lines = in_put.split(";")
+del lines[0]
+
+dates = set()
+for line in lines:
+    dates.add(line.split(",")[0])
+    #exchanges.add((line.split(",")[1]).split("_")[0])
+
+dates = list(dates)
+dates.sort()
+
+##deprecate and merge with above
+exchanges = set()
+for line in lines:
+    exchanges.add((line.split(",")[1]).split("_")[0])
+exchanges = list(exchanges)
+exchanges.sort()
+##end deprecate
+
+#print headers
+for date in dates:
+    exch_keys = dict.fromkeys(exchanges, 0)
+
+    for exchange in exchanges:
+        for line in lines:
+            if date in line and exchange in line:
+                exch_keys[exchange] += int(line.split(",")[4])
+
+        print(date + "," + exchange + "," + str(exch_keys[exchange]))
+
